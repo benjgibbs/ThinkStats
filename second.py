@@ -1,7 +1,7 @@
 import thinkstats as ts
 import math
 import survey 
-import bPmf 
+import pmf 
 
 def printStats(xs,what) :
 	m,v = ts.MeanVar(xs)
@@ -9,7 +9,7 @@ def printStats(xs,what) :
 	print 'The Mean',what,'is', m
 	print 'The Variance in',what,'is', v
 	print 'The Std Dev in',what,'is', math.sqrt(v)
-	pmf = bPmf.MakePmfFromList(xs)
+	pmf = pmf.MakePmfFromList(xs)
 	print 'PmfMean:', pmf.Mean()
 	print 'PmfVar:', pmf.Var()
 
@@ -42,7 +42,7 @@ def RemainingLifetime(pmf,age):
 			result.Mult(x,1.0/newTot)
 	return result
 	
-pmf = bPmf.MakePmfFromList([1,2,2,3,3,3,4,4,5])
+pmf = pmf.MakePmfFromList([1,2,2,3,3,3,4,4,5])
 pmf.Print()
 print
 pmf2 = RemainingLifetime(pmf,3)	

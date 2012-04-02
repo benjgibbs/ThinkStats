@@ -1,5 +1,5 @@
 import  survey
-import  bPmf
+import  pmf
 
 def ProbIn(pmf,min,max) : 
 	tot = 0.0
@@ -19,7 +19,7 @@ def ProbLate(pmf) :
 	return ProbIn(pmf,41,100)
 
 def PmfFor(liveBirths,pred):
-	return bPmf.MakePmfFromList([round(p.prglength) for p in liveBirths if pred(p)])
+	return pmf.MakePmfFromList([round(p.prglength) for p in liveBirths if pred(p)])
 
 
 def FindBins(msg,liveBirths,pred) :
