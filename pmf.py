@@ -1,72 +1,85 @@
 
-def MakeHistFromList(xs) :
+def MakeHistFromList(xs):
 	return Hist(xs)
 
-def MakePmfFromList(xs) :
-	return Pmf(xs)
+def MakeHistFromDic(dic):
+	h = Hist()
+	h.histDic = dic
+	return h
 
-class Pmf :
-	def __init__(self,xs):
-		self.hist = Hist(xs)
+def MakePmfFromList(xs):
+	return Pmf(Hist(xs))
+
+def MakePmfFromDic(xs):
+	return Pmf(MakeHistFromDic(xs))
+
+class Pmf:
+	def __init__(self,hist):
+		self.SetHist(hist)
+		self.Initialize()
+	
+	def SetHist(self,hist):
+		self.hist=hist	
+
+	def Initialize(self):
 		pmf =  {}
-		n = float(len(xs))
-		for x,freq in self.hist.Items() :
+		n = float(len(self.hist.Items()))
+		for x,freq in self.hist.Items():
 			pmf[x] = freq/n
-		
 		self.pmfDic = pmf
 	
-	def Prob(self,n) :
+	def Prob(self,n):
 		return self.pmfDic.get(n,0)
 	
-	def Items(self) :
+	def Items(self):
 		return self.pmfDic.items()
 
-	def Render(self) :
+	def Render(self):
 		return self.pmfDic.keys(),self.pmfDic.values()
 	
-	def Mult(self,n,x) :
+	def Mult(self,n,x):
 		self.pmfDic[n] = self.Prob(n) * x
 	
-	def Inc(self,n,x) :
+	def Inc(self,n,x):
 		self.pmfDic[n] = self.Prob(n) + x
 	
-	def Total(self) :
+	def Total(self):
 		total = 0
-		for x in self.pmfDic.values() :
+		for x in self.pmfDic.values():
 			total += x
 		return total
 	
-	def Renormalize(self) :	
+	def Renormalize(self):	
 		total = self.Total()
 		for k,v in self.pmfDic.items():
 			self.pmfDic[k] = v/total
 	
-	def Copy(self) :
-		copy = Pmf([])
+	def Copy(self):
+		copy = Pmf(Hist([]))
 		copy.pmfDic = self.pmfDic.copy()
 		return copy
 	
-	def Print(self) :
+	def Print(self):
 		for a,b in self.Items():
 			print a,':',b
 
-	def Mean(self) : 
+	def Mean(self): 
 		result = 0.0
-		for x,p in self.Items() : 
+		for x,p in self.Items(): 
 			result += x * p
 		return result
 	
-	def Var(self) : 
+	def Var(self): 
 		mu = self.Mean()
 		result = 0.0
-		for x,p in self.Items() :
+		for x,p in self.Items():
 			result += (p * ((x - mu) ** 2.0))
 		return result
 
-class Hist :
-	def __init__(self,xs):
+class Hist:
+	def __init__(self,xs=[]):
 		hist =  {}
-		for x in xs :
+		for x in xs:
 			hist[x] = hist.get(x,0) + 1
 		self.histDic = hist
 
@@ -78,19 +91,22 @@ class Hist :
 	
 	def Items(self):
 		return self.histDic.items()
+	
+	def Count(self):
+		return len(self.Items())
 
 	def Mode(self):
 		mk = None
-		for k,f in self.Items() :
-			if mk is None or f > self.Freq(mk) :
+		for k,f in self.Items():
+			if mk is None or f > self.Freq(mk):
 				mk = k
 		return mk
 	
-	def AllModes(self) :
+	def AllModes(self):
 		return sorted(self.Items(), 
-			lambda a, b : b[1] - a[1] )
+			lambda a, b: b[1] - a[1] )
 
-def main() :
+def main():
 	h = MakeHistFromList([1,2,2,3,5])
 	print 'Freq(2):', h.Freq(2)
 	print 'Freq(4):', h.Freq(4)
@@ -115,7 +131,6 @@ def main() :
 	pmf.Renormalize()
 	print 'Total:', pmf.Total()
 	print 'Pmf2 Total: ',pmf2.Total()
-
 
 if __name__ == '__main__':
 	main()
